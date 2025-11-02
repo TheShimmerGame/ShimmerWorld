@@ -1,0 +1,8 @@
+/.va
+/.vs
+/.build_*
+/backend/node_modules
+/bin
+/build
+/install
+/.vs_history

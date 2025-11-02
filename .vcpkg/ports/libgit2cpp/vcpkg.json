@@ -1,0 +1,19 @@
+{
+    "name": "libgit2cpp",
+    "version-date": "2025-03-29",
+    "description": "C++ wrapper for libgit2",
+    "dependencies": [
+      "libgit2",
+      "pkgconf",
+      {
+        "name": "vcpkg-cmake",
+        "host": true
+      },
+      {
+        "name": "vcpkg-cmake-config",
+        "host": true
+      }
+    ]
+}
+
+  

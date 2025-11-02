@@ -1,0 +1,11 @@
+set(VCPKG_TARGET_ARCHITECTURE x64)
+if (${PORT} MATCHES "openssl" )
+    set(VCPKG_CRT_LINKAGE static)
+    set(VCPKG_LIBRARY_LINKAGE static)
+else()
+    set(VCPKG_CRT_LINKAGE dynamic)
+    set(VCPKG_LIBRARY_LINKAGE dynamic)
+endif()
+set(VCPKG_PLATFORM_TOOLSET v143)
+# Remove? leave? We wanna load blizzards model files later and maybe turn them into fbxes for blender validation?
+set(VCPKG_ENV_PASSTHROUGH_UNTRACKED "FBXSDK_HEADER_LOCATION")

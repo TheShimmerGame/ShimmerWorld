@@ -1,0 +1,13 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index f83c583..4c97266 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -128,7 +128,7 @@ if (NFD_INSTALL)
+     LIBRARY DESTINATION ${LIB_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}    
+   )
+   install(EXPORT ${TARGET_NAME}-export
+-    DESTINATION lib/cmake/${TARGET_NAME}
++    DESTINATION share/${TARGET_NAME}
+     NAMESPACE ${TARGET_NAME}::
+     FILE ${TARGET_NAME}-config.cmake
+   )

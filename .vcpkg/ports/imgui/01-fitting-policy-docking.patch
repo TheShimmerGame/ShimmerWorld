@@ -1,0 +1,13 @@
+diff --git a/imgui.cpp b/imgui.cpp
+index 669b132..54c1ada 100644
+--- a/imgui.cpp
++++ b/imgui.cpp
+@@ -17822,7 +17822,7 @@ static void ImGui::DockNodeUpdateTabBar(ImGuiDockNode* node, ImGuiWindow* host_w
+ 
+     // Begin tab bar
+     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs; // | ImGuiTabBarFlags_NoTabListScrollingButtons);
+-    tab_bar_flags |= ImGuiTabBarFlags_SaveSettings | ImGuiTabBarFlags_DockNode;// | ImGuiTabBarFlags_FittingPolicyScroll;
++    tab_bar_flags |= ImGuiTabBarFlags_SaveSettings | ImGuiTabBarFlags_DockNode | ImGuiTabBarFlags_FittingPolicyScroll;
+     tab_bar_flags |= ImGuiTabBarFlags_DrawSelectedOverline;
+     if (!host_window->Collapsed && is_focused)
+         tab_bar_flags |= ImGuiTabBarFlags_IsFocused;

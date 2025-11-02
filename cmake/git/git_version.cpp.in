@@ -1,0 +1,10 @@
+
+#include "git_version.h"
+
+namespace ed::version
+{
+    const char* GIT_VERSION = "@GIT_HASH@";
+    const char* WEDITOR_SEM_VERSION = "@WEDITOR_SEMVER_CACHE@";
+    // warning: this just indicate time when this file was generated, usually indicates the first time code is compiled with given hash
+    long long int WEDITOR_COMPILE_TIME = @CONFIGURE_TIME_CACHE@ll;
+}

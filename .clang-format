@@ -1,0 +1,88 @@
+
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Indentation and spacing
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+NamespaceIndentation: All
+IndentCaseLabels: true
+IndentCaseBlocks: false
+IndentGotoLabels: Left
+AccessModifierOffset: -4
+IndentRequiresClause: true
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Brace style
+BreakBeforeBraces: Allman
+BraceWrapping:
+  AfterNamespace: true
+  AfterClass: true
+  AfterStruct: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  BeforeElse: true
+  BeforeCatch: true
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# Spaces
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpacesInParentheses: true
+SpacesInSquareBrackets: true
+SpaceInEmptyParentheses: false
+SpacesInCStyleCastParentheses: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeComma: false
+SpaceAfterComma: true
+SpaceAfterSemicolon: true
+SpaceBeforeSemicolon: false
+SpaceBeforeCpp11BracedList: false
+SpacesInContainerLiterals: true
+PointerAlignment: Middle
+SpacesInConditionalStatement: true
+
+# Lambdas and inline blocks
+LambdaBodyIndentation: Signature
+AllowShortLambdasOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+BraceWrapping.AfterLambda: false
+
+# Alignment and wrapping
+AlignOperands: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+AlignAfterOpenBracket: Align
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+ColumnLimit: 140
+WrapPreserveBlocks: Never
+
+# Comments
+ReflowComments: false
+CommentPragmas: '^!'
+
+# Includes
+SortIncludes: false
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '.*'
+    Priority: 1

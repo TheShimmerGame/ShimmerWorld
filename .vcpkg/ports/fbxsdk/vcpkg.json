@@ -1,0 +1,8 @@
+{
+  "name": "fbxsdk",
+  "port-version": 1,
+  "version": "2020.2.1",
+  "description": "FBX software developement kit",
+  "homepage": "https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-2-1",
+  "license": null
+}

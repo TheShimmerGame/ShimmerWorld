@@ -1,0 +1,16 @@
+{
+  "name": "nfd",
+  "version": "1.1.1",
+  "description": "native file dialog extended",
+  "homepage": "https://github.com/btzy/nativefiledialog-extended",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}

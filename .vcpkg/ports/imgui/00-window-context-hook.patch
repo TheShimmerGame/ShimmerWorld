@@ -1,0 +1,40 @@
+diff --git a/imgui.cpp b/imgui.cpp
+index f66aaaa8..a4ef6339 100644
+--- a/imgui.cpp
++++ b/imgui.cpp
+@@ -7326,6 +7326,11 @@ ImGuiWindow* ImGui::FindBlockingModal(ImGuiWindow* window)
+ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
+ {
+     ImGuiContext& g = *GImGui;
++    
++    {
++        CallContextHooks(&g, ImGuiContextHookType_BeginWindow);
++    }
++    
+     const ImGuiStyle& style = g.Style;
+     IM_ASSERT(name != NULL && name[0] != '\0');     // Window name required
+     IM_ASSERT(g.WithinFrameScope);                  // Forgot to call ImGui::NewFrame()
+@@ -8315,6 +8320,10 @@ void ImGui::End()
+     SetCurrentWindow(g.CurrentWindowStack.Size == 0 ? NULL : g.CurrentWindowStack.back().Window);
+     if (g.CurrentWindow)
+         SetCurrentViewport(g.CurrentWindow, g.CurrentWindow->Viewport);
++    
++    {
++        CallContextHooks(&g, ImGuiContextHookType_EndWindow);
++    }
+ }
+ 
+ void ImGui::BringWindowToFocusFront(ImGuiWindow* window)
+diff --git a/imgui_internal.h b/imgui_internal.h
+index f54e8c8c..76f5a8a8 100644
+--- a/imgui_internal.h
++++ b/imgui_internal.h
+@@ -2194,7 +2194,7 @@ struct ImGuiIDStackTool
+ //-----------------------------------------------------------------------------
+ 
+ typedef void (*ImGuiContextHookCallback)(ImGuiContext* ctx, ImGuiContextHook* hook);
+-enum ImGuiContextHookType { ImGuiContextHookType_NewFramePre, ImGuiContextHookType_NewFramePost, ImGuiContextHookType_EndFramePre, ImGuiContextHookType_EndFramePost, ImGuiContextHookType_RenderPre, ImGuiContextHookType_RenderPost, ImGuiContextHookType_Shutdown, ImGuiContextHookType_PendingRemoval_ };
++enum ImGuiContextHookType { ImGuiContextHookType_NewFramePre, ImGuiContextHookType_NewFramePost, ImGuiContextHookType_EndFramePre, ImGuiContextHookType_EndFramePost, ImGuiContextHookType_RenderPre, ImGuiContextHookType_RenderPost, ImGuiContextHookType_Shutdown, ImGuiContextHookType_PendingRemoval_, ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow };
+ 
+ struct ImGuiContextHook
+ {
