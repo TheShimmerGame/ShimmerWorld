@@ -17,7 +17,7 @@ target_include_directories( ${TARGET_NAME}
 )
 
 find_package(unofficial-breakpad CONFIG REQUIRED)
-#find_package(Boost REQUIRED COMPONENTS nowide)
+find_package(Boost REQUIRED COMPONENTS nowide asio)
 find_package(spdlog REQUIRED)
 
 if (WIN32)

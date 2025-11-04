@@ -211,25 +211,29 @@
             "name": "ninja-build-debug",
             "displayName": "Debug (Ninja Build System)",
             "configurePreset": "ninja-build",
-            "configuration": "Debug"
+            "configuration": "Debug",
+			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
         },
         {
             "name": "ninja-build-release",
             "displayName": "Release (Ninja Build System)",
             "configurePreset": "ninja-build",
-            "configuration": "Release"
+            "configuration": "Release",
+			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
         },
         {
             "name": "ninja-clang-msvc-debug",
             "displayName": "Debug (Clang-CL + Ninja)",
             "configurePreset": "ninja-clang-msvc",
-            "configuration": "Debug"
+            "configuration": "Debug",
+			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
         },
         {
             "name": "ninja-clang-msvc-release",
             "displayName": "Release (Clang-CL + Ninja)",
             "configurePreset": "ninja-clang-msvc",
-            "configuration": "Release"
+            "configuration": "Release",
+			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
         }
     ]
 }

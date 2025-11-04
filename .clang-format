@@ -1,88 +1,65 @@
-
-Language: Cpp
-BasedOnStyle: LLVM
-
-# Indentation and spacing
+...
+BasedOnStyle: WebKit
 IndentWidth: 4
-TabWidth: 4
-UseTab: Never
 ContinuationIndentWidth: 4
-NamespaceIndentation: All
-IndentCaseLabels: true
-IndentCaseBlocks: false
-IndentGotoLabels: Left
-AccessModifierOffset: -4
-IndentRequiresClause: true
-IndentWrappedFunctionNames: false
-KeepEmptyLinesAtTheStartOfBlocks: false
-
-# Brace style
-BreakBeforeBraces: Allman
-BraceWrapping:
-  AfterNamespace: true
-  AfterClass: true
-  AfterStruct: true
-  AfterControlStatement: true
-  AfterEnum: true
-  AfterFunction: true
-  BeforeElse: true
-  BeforeCatch: true
-  BeforeWhile: false
-  IndentBraces: false
-  SplitEmptyFunction: false
-  SplitEmptyRecord: false
-  SplitEmptyNamespace: false
-
-# Spaces
-SpaceBeforeParens: ControlStatements
-SpaceBeforeRangeBasedForLoopColon: true
-SpacesInParentheses: true
-SpacesInSquareBrackets: true
-SpaceInEmptyParentheses: false
-SpacesInCStyleCastParentheses: true
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: true
-SpaceBeforeComma: false
-SpaceAfterComma: true
-SpaceAfterSemicolon: true
-SpaceBeforeSemicolon: false
-SpaceBeforeCpp11BracedList: false
-SpacesInContainerLiterals: true
-PointerAlignment: Middle
-SpacesInConditionalStatement: true
-
-# Lambdas and inline blocks
-LambdaBodyIndentation: Signature
-AllowShortLambdasOnASingleLine: None
-AllowShortFunctionsOnASingleLine: Empty
-AllowShortBlocksOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: false
-BraceWrapping.AfterLambda: false
-
-# Alignment and wrapping
-AlignOperands: Align
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignTrailingComments: true
-AlignAfterOpenBracket: Align
-AlwaysBreakTemplateDeclarations: Yes
+ColumnLimit: 400
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
 BinPackArguments: false
 BinPackParameters: false
-AllowAllParametersOfDeclarationOnNextLine: true
-BreakBeforeBinaryOperators: NonAssignment
-BreakBeforeTernaryOperators: true
-ColumnLimit: 140
-WrapPreserveBlocks: Never
+PenaltyBreakFirstLessLess: 1000000000
+PenaltyExcessCharacter: 1000000000
+AlignAfterOpenBracket: false
+AlignOperands: DontAlign
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortLambdasOnASingleLine: Empty
 
-# Comments
-ReflowComments: false
-CommentPragmas: '^!'
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+  AfterFunction: true
+  BeforeLambdaBody: true
 
-# Includes
+LambdaBodyIndentation: Signature
+IndentCaseLabels: true
+NamespaceIndentation: All
+EmptyLineBeforeAccessModifier: Leave
+AlignArrayOfStructures: Left
+DerivePointerAlignment: false
+PointerAlignment: Middle
+ReferenceAlignment: Pointer
+QualifierAlignment: Left
+SpaceAfterTemplateKeyword: false
+SpaceBeforeCpp11BracedList: false
+SpaceAroundPointerQualifiers: Both
+SpaceInEmptyBlock: false
+SpacesInAngles: true
+SpacesInConditionalStatement: true
+SpacesInCStyleCastParentheses: true
+SpacesInParentheses: true
+SpacesInSquareBrackets: true
+IncludeBlocks: Merge
 SortIncludes: false
-IncludeBlocks: Preserve
-IncludeCategories:
-  - Regex: '.*'
-    Priority: 1
+BreakBeforeBinaryOperators: true
+BreakBinaryOperations: OnePerLine
+BreakBeforeTernaryOperators: true
+ReflowComments: false
+AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveBitFields: AcrossComments
+SortUsingDeclarations: false
+...

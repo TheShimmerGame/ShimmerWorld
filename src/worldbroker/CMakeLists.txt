@@ -27,7 +27,16 @@ target_sources( ${BINARY_TARGET_NAME}
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${TARGET_SOURCES})
 
 # TODO: this needs cleaning up, i've just copy n pasted this from the internets and that never ends well
-if (MSVC)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${BINARY_TARGET_NAME} PRIVATE
+        -Wall -Wextra -Wpedantic -Wno-c++98-compat           # roughly MSVC /W3
+        -Wconversion
+        -Wshadow-all
+        -Wimplicit-fallthrough
+        -Wformat -Wformat=2 -Werror=format-security
+        -g
+        -fdiagnostics-color=always)
+elseif (MSVC)
     target_compile_options(${BINARY_TARGET_NAME} PRIVATE
         /bigobj
         /Zf
@@ -39,34 +48,11 @@ if (MSVC)
         $<$<CONFIG:Release>:/DEBUG;/OPT:REF;/OPT:ICF>
         $<$<NOT:$<CONFIG:Release>>:/DEBUG>
     )
-
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        target_compile_options(${BINARY_TARGET_NAME} PRIVATE
-            /bigobj
-            /Zf
-            /MP
-            /Zi
-            /W3
-        )
-        target_link_options(${BINARY_TARGET_NAME} PRIVATE
-            $<$<CONFIG:Release>:/DEBUG;/OPT:REF;/OPT:ICF>
-            $<$<NOT:$<CONFIG:Release>>:/DEBUG>
-        )
-    else()
-        target_compile_options(${BINARY_TARGET_NAME} PRIVATE
-            -Wall -Wextra          # roughly /W3
-            -g                     # debug info
-            -fdiagnostics-color=always
-            -Wa,-mbig-obj          # bigobj equivalent
-            -fvisibility=hidden
-        )
-    endif()
 endif()
 
 target_link_libraries( ${BINARY_TARGET_NAME}
     PUBLIC
 		shimmer::common
-		shimmer::shared
+		#shimmer::shared
 )
 
