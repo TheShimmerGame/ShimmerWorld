@@ -17,8 +17,9 @@ target_include_directories( ${TARGET_NAME}
 )
 
 find_package(unofficial-breakpad CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS nowide asio)
-find_package(spdlog REQUIRED)
+# todo: Add specific components, not entire boost
+#find_package(Boost REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
 
 if (WIN32)
     target_compile_definitions(${TARGET_NAME} PUBLIC   

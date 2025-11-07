@@ -1,239 +1,215 @@
 {
-    "version": 3,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 21,
-        "patch": 0
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 31,
+    "patch": 0
+  },
+
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "installDir": "${sourceDir}/bin/",
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_HOST_TRIPLET": "x64-windows",
+        "VCPKG_OVERLAY_PORTS": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/.vcpkg/ports"
+        },
+        "VCPKG_OVERLAY_TRIPLETS": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/.vcpkg/triplets"
+        },
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/bin/Debug"
+        },
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/bin/Release"
+        },
+        "CMAKE_INSTALL_PREFIX": {
+          "type": "FILEPATH",
+          "value": "${sourceDir}/install"
+        },
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_COLOR_DIAGNOSTICS": "ON"
+      }
     },
-    "configurePresets": [
-        {
-            "name": "msbuild-2026-win64",
-            "displayName": "Windows x64 (MSBuild - Visual Studio 2026)",
-            "binaryDir": "${sourceDir}/.build_ms/${presetName}",
-            "installDir": "${sourceDir}/bin/",
-            "generator": "Visual Studio 18 2026",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
-            "environment": {
-                "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_ms/vcpkg_archives,readwrite;"
-            },
-            "cacheVariables": {
-                "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_ms/vcpkg_installed",
-                "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_ms/vcpkg_buildtrees",
-                "VCPKG_TARGET_TRIPLET": "x64-windows",
-                "VCPKG_HOST_TRIPLET": "x64-windows",
-                "VCPKG_OVERLAY_PORTS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/ports"
-                },
-                "VCPKG_OVERLAY_TRIPLETS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/triplets"
-                },
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Debug"
-                },
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Release"
-                },
-                "CMAKE_INSTALL_PREFIX": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/install"
-                },
-                "CMAKE_CXX_STANDARD": "23"
-            }
-        },
-        {
-            "name": "msbuild-win64",
-            "displayName": "Windows x64 (MSBuild - Visual Studio 2022)",
-            "binaryDir": "${sourceDir}/.build_ms/${presetName}",
-            "installDir": "${sourceDir}/bin/",
-            "generator": "Visual Studio 17 2022",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
-            "environment": {
-                "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_ms/vcpkg_archives,readwrite;"
-            },
-            "cacheVariables": {
-                "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_ms/vcpkg_installed",
-                "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_ms/vcpkg_buildtrees",
-                "VCPKG_TARGET_TRIPLET": "x64-windows",
-                "VCPKG_HOST_TRIPLET": "x64-windows",
-                "VCPKG_OVERLAY_PORTS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/ports"
-                },
-                "VCPKG_OVERLAY_TRIPLETS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/triplets"
-                },
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Debug"
-                },
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Release"
-                },
-                "CMAKE_INSTALL_PREFIX": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/install"
-                },
-                "CMAKE_CXX_STANDARD": "23"
-            }
-        },
-        {
-            "name": "ninja-build",
-            "displayName": "Windows x64 (Ninja Build System)",
-            "binaryDir": "${sourceDir}/.build_ninja/${presetName}",
-            "installDir": "${sourceDir}/bin/",
-            "generator": "Ninja Multi-Config",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
-            "environment": {
-                "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_ninja/vcpkg_archives,readwrite;"
-            },
-            "cacheVariables": {
-                "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_ninja/vcpkg_installed",
-                "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_ninja/vcpkg_buildtrees",
-                "VCPKG_TARGET_TRIPLET": "x64-windows",
-                "VCPKG_HOST_TRIPLET": "x64-windows",
-                "VCPKG_OVERLAY_PORTS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/ports"
-                },
-                "VCPKG_OVERLAY_TRIPLETS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/triplets"
-                },
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Debug"
-                },
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Release"
-                },
-                "CMAKE_INSTALL_PREFIX": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/install"
-                },
-                "CMAKE_CXX_STANDARD": "26"
-            }
-        },
-        {
-            "name": "ninja-clang-msvc",
-            "displayName": "Windows x64 (Clang-CL + Ninja Multi-Config)",
-            "binaryDir": "${sourceDir}/.build_clang/${presetName}",
-            "installDir": "${sourceDir}/bin/",
-            "generator": "Ninja Multi-Config",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
-            "environment": {
-                "CC": "clang-cl",
-                "CXX": "clang-cl",
-                "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_clang/vcpkg_archives,readwrite;"
-            },
-            "cacheVariables": {
-                "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_clang/vcpkg_installed",
-                "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_clang/vcpkg_buildtrees",
-                "VCPKG_TARGET_TRIPLET": "x64-windows",
-                "VCPKG_HOST_TRIPLET": "x64-windows",
-                "VCPKG_OVERLAY_PORTS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/ports"
-                },
-                "VCPKG_OVERLAY_TRIPLETS": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/.vcpkg/triplets"
-                },
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Debug"
-                },
-                "CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/bin/Release"
-                },
-                "CMAKE_INSTALL_PREFIX": {
-                    "type": "FILEPATH",
-                    "value": "${sourceDir}/install"
-                },
-                "CMAKE_CXX_STANDARD": "26"
-            },
-            "vendor": {
-                "microsoft.com/VisualStudioSettings/CMake/1.0": {
-                    "intelliSenseMode": "windows-clang-x64"
-                }
-            }
+
+    {
+      "name": "base-msbuild",
+      "hidden": true,
+      "inherits": "base",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "base-msbuild-storage",
+      "hidden": true,
+      "inherits": "base-msbuild",
+      "binaryDir": "${sourceDir}/.build_ms/${presetName}",
+      "environment": {
+        "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_ms/vcpkg_archives,readwrite;"
+      },
+      "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_ms/vcpkg_installed",
+        "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_ms/vcpkg_buildtrees"
+      }
+    },
+
+    {
+      "name": "base-ninja",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Ninja Multi-Config",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+
+    {
+      "name": "base-clang-storage",
+      "hidden": true,
+      "inherits": "base-ninja",
+      "binaryDir": "${sourceDir}/.build_clang/${presetName}",
+      "environment": {
+        "CC": "clang-cl",
+        "CXX": "clang-cl",
+        "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_clang/vcpkg_archives,readwrite;"
+      },
+      "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_clang/vcpkg_installed",
+        "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_clang/vcpkg_buildtrees"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-clang-x64"
         }
-    ],
-    "buildPresets": [
-        {
-            "name": "msbuild-win64-debug",
-            "displayName": "Debug (MSBuild - Visual Studio 2022)",
-            "configurePreset": "msbuild-win64",
-            "configuration": "Debug"
-        },
-        {
-            "name": "msbuild-win64-release",
-            "displayName": "Release (MSBuild - Visual Studio 2022)",
-            "configurePreset": "msbuild-win64",
-            "configuration": "Release"
-        },
-        {
-            "name": "msbuild-2026-win64-release",
-            "displayName": "Release (MSBuild - Visual Studio 2026)",
-            "configurePreset": "msbuild-2026-win64",
-            "configuration": "Release"
-        },
-        {
-            "name": "msbuild-2026-win64-debug",
-            "displayName": "Debug (MSBuild - Visual Studio 2026)",
-            "configurePreset": "msbuild-2026-win64",
-            "configuration": "Debug"
-        },
-        {
-            "name": "ninja-build-debug",
-            "displayName": "Debug (Ninja Build System)",
-            "configurePreset": "ninja-build",
-            "configuration": "Debug",
-			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
-        },
-        {
-            "name": "ninja-build-release",
-            "displayName": "Release (Ninja Build System)",
-            "configurePreset": "ninja-build",
-            "configuration": "Release",
-			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
-        },
-        {
-            "name": "ninja-clang-msvc-debug",
-            "displayName": "Debug (Clang-CL + Ninja)",
-            "configurePreset": "ninja-clang-msvc",
-            "configuration": "Debug",
-			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
-        },
-        {
-            "name": "ninja-clang-msvc-release",
-            "displayName": "Release (Clang-CL + Ninja)",
-            "configurePreset": "ninja-clang-msvc",
-            "configuration": "Release",
-			"nativeToolOptions": [ "-v", "-d stats", "--quiet" ]
+      }
+    },
+
+    {
+      "name": "base-msbuild-clang-storage",
+      "hidden": true,
+      "inherits": "base-msbuild",
+      "binaryDir": "${sourceDir}/.build_msclang/${presetName}",
+      "generator": "Visual Studio 17 2022",
+      "toolset": {
+        "value": "ClangCL"
+      },
+      "environment": {
+        "VCPKG_BINARY_SOURCES": "clear;files,${sourceDir}/.build_msclang/vcpkg_archives,readwrite;"
+      },
+      "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/.build_msclang/vcpkg_installed",
+        "VCPKG_INSTALL_OPTIONS": "--x-buildtrees-root=${sourceDir}/.build_msclang/vcpkg_buildtrees"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-clang-x64"
         }
-    ]
+      }
+    },
+
+    {
+      "name": "msbuild-win64",
+      "displayName": "Windows x64 (MSBuild - Visual Studio 2022)",
+      "inherits": "base-msbuild-storage",
+      "generator": "Visual Studio 17 2022"
+    },
+    {
+      "name": "msbuild-2026-win64",
+      "displayName": "Windows x64 (MSBuild - Visual Studio 2026)",
+      "inherits": "base-msbuild-storage",
+      "generator": "Visual Studio 18 2026"
+    },
+
+    {
+      "name": "msbuild-clang-win64",
+      "displayName": "Windows x64 (MSBuild - VS2022 ClangCL)",
+      "inherits": "base-msbuild-clang-storage"
+    },
+
+    {
+      "name": "ninja-clang-msvc",
+      "displayName": "Windows x64 (Clang-CL + Ninja Multi-Config)",
+      "inherits": "base-clang-storage"
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "base-build",
+      "hidden": true
+    },
+
+    {
+      "name": "msbuild-win64-debug",
+      "displayName": "Debug (MSBuild - Visual Studio 2022)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-win64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "msbuild-win64-release",
+      "displayName": "Release (MSBuild - Visual Studio 2022)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-win64",
+      "configuration": "Release"
+    },
+    {
+      "name": "msbuild-2026-win64-debug",
+      "displayName": "Debug (MSBuild - Visual Studio 2026)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-2026-win64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "msbuild-2026-win64-release",
+      "displayName": "Release (MSBuild - Visual Studio 2026)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-2026-win64",
+      "configuration": "Release"
+    },
+
+    {
+      "name": "msbuild-clang-win64-debug",
+      "displayName": "Debug (MSBuild - VS2022 ClangCL)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-clang-win64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "msbuild-clang-win64-release",
+      "displayName": "Release (MSBuild - VS2022 ClangCL)",
+      "inherits": "base-build",
+      "configurePreset": "msbuild-clang-win64",
+      "configuration": "Release"
+    },
+
+    {
+      "name": "ninja-clang-msvc-debug",
+      "displayName": "Debug (Clang-CL + Ninja)",
+      "inherits": "base-build",
+      "configurePreset": "ninja-clang-msvc",
+      "configuration": "Debug",
+      "nativeToolOptions": [ "-v", "-d", "stats", "--quiet" ]
+    },
+    {
+      "name": "ninja-clang-msvc-release",
+      "displayName": "Release (Clang-CL + Ninja)",
+      "inherits": "base-build",
+      "configurePreset": "ninja-clang-msvc",
+      "configuration": "Release",
+      "nativeToolOptions": [ "-v", "-d", "stats", "--quiet" ]
+    }
+  ]
 }
