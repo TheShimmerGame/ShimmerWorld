@@ -1,27 +1,22 @@
-...
-BasedOnStyle: WebKit
-IndentWidth: 4
-ContinuationIndentWidth: 4
-ColumnLimit: 400
-AllowAllArgumentsOnNextLine: false
-AllowAllConstructorInitializersOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
-BinPackArguments: false
-BinPackParameters: false
-PenaltyBreakFirstLessLess: 1000000000
-PenaltyExcessCharacter: 1000000000
-AlignAfterOpenBracket: false
-AlignOperands: DontAlign
-AllowShortEnumsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-AllowShortLambdasOnASingleLine: Empty
-
-BreakBeforeBraces: Custom
-BraceWrapping:
+# Format Style Options - Created with Clang Power Tools
+---
+AccessModifierOffset: -4
+AlignAfterOpenBracket: true
+AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveBitFields: AcrossComments
+AlignOperands: Align
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortLambdasOnASingleLine: false
+BasedOnStyle: Microsoft
+BinPackParameters: true
+BraceWrapping: 
   AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: true
   AfterEnum: true
+  AfterFunction: true
   AfterNamespace: true
   AfterObjCDeclaration: true
   AfterStruct: true
@@ -29,37 +24,33 @@ BraceWrapping:
   AfterExternBlock: true
   BeforeCatch: true
   BeforeElse: true
+  IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-  AfterFunction: true
   BeforeLambdaBody: true
-
-LambdaBodyIndentation: Signature
+  BeforeWhile: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+ColumnLimit: 0
+ContinuationIndentWidth: 4
 IndentCaseLabels: true
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+Language: Cpp
 NamespaceIndentation: All
-EmptyLineBeforeAccessModifier: Leave
-AlignArrayOfStructures: Left
-DerivePointerAlignment: false
-PointerAlignment: Middle
-ReferenceAlignment: Pointer
-QualifierAlignment: Left
 SpaceAfterTemplateKeyword: false
-SpaceBeforeCpp11BracedList: false
 SpaceAroundPointerQualifiers: Both
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
 SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
 SpacesInAngles: true
-SpacesInConditionalStatement: true
+SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: true
+SpacesInConditionalStatement: true
 SpacesInParentheses: true
 SpacesInSquareBrackets: true
-IncludeBlocks: Merge
-SortIncludes: false
-BreakBeforeBinaryOperators: true
-BreakBinaryOperations: OnePerLine
-BreakBeforeTernaryOperators: true
-ReflowComments: false
-AlignConsecutiveAssignments: AcrossComments
-AlignConsecutiveBitFields: AcrossComments
-SortUsingDeclarations: false
 ...

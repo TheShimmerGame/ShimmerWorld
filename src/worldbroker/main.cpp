@@ -1,5 +1,8 @@
 
-int main( int /*argc = 0*/, char ** /*argv = nullptr*/ )
+#include "app/Application.hpp"
+
+int main( int argc, char ** argv )
 {
-    return 0;
+    wb::Application app;
+    return app.Run( argc, argv );
 }

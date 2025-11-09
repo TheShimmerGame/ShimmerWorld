@@ -18,6 +18,8 @@ target_include_directories( ${BINARY_TARGET_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_compile_features( ${BINARY_TARGET_NAME} PRIVATE cxx_std_23 )
+
 file( GLOB_RECURSE TARGET_SOURCES CONFIGURE_DEPENDS *.cpp *.hpp )
 
 target_sources( ${BINARY_TARGET_NAME}
@@ -26,16 +28,25 @@ target_sources( ${BINARY_TARGET_NAME}
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${TARGET_SOURCES})
 
+### LIBRARIES
+find_package(flecs CONFIG REQUIRED)
+find_package(args CONFIG REQUIRED)
+
 # TODO: this needs cleaning up, i've just copy n pasted this from the internets and that never ends well
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(${BINARY_TARGET_NAME} PRIVATE
-        -Wall -Wextra -Wpedantic -Wno-c++98-compat           # roughly MSVC /W3
+		#-fansi-escape-codes -fcolor-diagnostics
+        -Wall -Wextra -Wpedantic
         -Wconversion
         -Wshadow-all
         -Wimplicit-fallthrough
         -Wformat -Wformat=2 -Werror=format-security
-        -g
-        -fdiagnostics-color=always)
+		-Wno-cast-function-type-mismatch
+		# This warning doesn't work properly in VS, it reports even in proper header
+		# https://github.com/mitaki28/vscode-clang/issues/53
+		-Wno-pragma-once-outside-header
+		-Wno-c++98-compat
+        -g)
 elseif (MSVC)
     target_compile_options(${BINARY_TARGET_NAME} PRIVATE
         /bigobj
@@ -54,5 +65,8 @@ target_link_libraries( ${BINARY_TARGET_NAME}
     PUBLIC
 		shimmer::common
 		#shimmer::shared
+		
+		flecs::flecs_static
+		taywee::args
 )
 

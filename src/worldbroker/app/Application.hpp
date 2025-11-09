@@ -1,27 +1,29 @@
-
 #pragma once
 
-#include <chrono>
+#include <memory>
+#include <thread>
+
+namespace flecs
+{
+    struct world;
+}
 
 namespace wb
 {
     class Application
     {
     public:
-
         Application();
         ~Application();
 
-        Application( const Application & ) = delete;
-        Application & operator=( const Application & ) = delete;
-        Application( Application && )                  = delete;
-        Application & operator=( Application && )      = delete;
+        Application( const Application & )            = delete;
+        Application &operator=( const Application & ) = delete;
+        Application( Application && )                 = delete;
+        Application &operator=( Application && )      = delete;
 
-
-        int Run( int argc, char * argv[] );
+        int Run( int argc, char *argv[] );
 
     protected:
-        // chrono timer since start
-        std::chrono::steady_clock::time_point m_startTime;
+        std::unique_ptr< flecs::world > m_broker_world;
     };
-}
+} // namespace wb

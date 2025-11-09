@@ -1,33 +1,60 @@
 
 #include "Application.hpp"
 
-#include <ranges>
-#include <vector>
+#include <args.hxx>
+#include <flecs.h>
+
+#include <filesystem>
+#include <iostream> // std::cerr, std::endl - in case we error out early and we do not have logging setup yet
 #include <print>
 
-wb::Application::Application()
+wb::Application::Application() : m_broker_world( std::make_unique< flecs::world >() )
 {
 }
 
 wb::Application::~Application() = default;
 
-int wb::Application::Run( int /*argc*/, char ** /*argv[] */ )
+// TODO move me to defines
+constexpr uint32_t TARGET_FPS = 120;
+
+int wb::Application::Run( int argc, char **argv )
 {
-    std::vector< int32_t > tests{ 0, 1, 2, 3, 4 };
-    auto new_tests = tests
-        | std::views::filter(
-            []( int32_t v )
-            {
-                return v % 2 == 0;
-            } )
-        | std::views::transform(
-            []( int32_t v )
-            {
-                return v * v;
-            } );
+    // m_broker_world->app()
+    //     .target_fps( TARGET_FPS )
+    //     .run();
 
-    for ( int32_t test_id : new_tests )
-        std::print( "ID: {}", test_id );
+    std::filesystem::path config_directory = ".";
+    args::ArgumentParser parser( "Shimmer World Broker Application", "A broker application for managing connections from players and service servers." );
+    try
+    {
+        args::HelpFlag help( parser, "help", "Display this help menu", { 'h', "help" } );
+        args::ValueFlag< std::string > config_dir( parser, "config-dir", "Directory to load configuration files from", { 'c', "config-dir" }, args::Options::Single );
+        // args supports completion in bash/zsh/fish shells via CompletionFlag, but we have no use for it at the moment
+        // TODO: add it at some point, see https://github.com/Taywee/args/issues/126
 
+        parser.ParseCLI( argc, argv );
+
+        if ( config_dir )
+            config_directory = config_dir.Get();
+    }
+    catch ( const args::Completion &e )
+    {
+        return 0;
+    }
+    catch ( const args::Help &h )
+    {
+        std::print( std::cerr, "{}\n{}", h.what(), parser.Help() );
+        return 0;
+    }
+    catch ( args::ParseError e )
+    {
+        std::print( std::cerr, "{}\n{}", e.what(), parser.Help() );
+        return 1;
+    }
+    catch ( args::ValidationError e )
+    {
+        std::print( std::cerr, "{}\n{}", e.what(), parser.Help() );
+        return 1;
+    }
     return 0;
 }
