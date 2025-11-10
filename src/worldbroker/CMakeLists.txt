@@ -64,7 +64,7 @@ endif()
 target_link_libraries( ${BINARY_TARGET_NAME}
     PUBLIC
 		shimmer::common
-		#shimmer::shared
+		shimmer::shared
 		
 		flecs::flecs_static
 		taywee::args

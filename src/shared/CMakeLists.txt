@@ -4,6 +4,11 @@ set( TARGET_NAME shared_shim )
 add_library( ${TARGET_NAME} STATIC )
 add_library( shimmer::shared ALIAS shared_shim )
 
+### LIBRARIES
+find_package(flecs CONFIG REQUIRED)
+find_package(args CONFIG REQUIRED)
+find_package(magic_enum CONFIG REQUIRED)
+
 set_target_properties( ${TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX )
 
 target_include_directories( ${TARGET_NAME}
@@ -19,9 +24,11 @@ target_sources( ${TARGET_NAME}
 )
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${TARGET_SOURCES})
-target_include_directories( ${TARGET_NAME} PUBLIC ${CPP_REFL_INCLUDE_DIRS})
+#target_include_directories( ${TARGET_NAME} PUBLIC ${CPP_REFL_INCLUDE_DIRS})
 target_link_libraries( ${TARGET_NAME}
     PUBLIC
-
-    PRIVATE
+		flecs::flecs_static
+		taywee::args
+		magic_enum::magic_enum
+    #PRIVATE
 )
