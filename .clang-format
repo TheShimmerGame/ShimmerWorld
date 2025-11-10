@@ -5,6 +5,7 @@ AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: AcrossComments
 AlignConsecutiveBitFields: AcrossComments
 AlignOperands: Align
+QualifierAlignment: Left
 AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -41,6 +42,7 @@ IndentWidth: 4
 IndentWrappedFunctionNames: true
 Language: Cpp
 MaxEmptyLinesToKeep: 2
+NamespaceIndentation: All
 PointerAlignment: Middle
 SpaceAfterTemplateKeyword: false
 SpaceAroundPointerQualifiers: Both

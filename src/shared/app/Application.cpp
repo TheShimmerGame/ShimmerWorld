@@ -8,7 +8,11 @@
 #include <iostream> // std::cerr, std::endl - in case we error out early and we do not have logging setup yet
 #include <print>
 
-wb::Application::Application() : m_broker_world( std::make_unique< flecs::world >() )
+#include "logging/Logging.hpp"
+#include "config/ConfigComponents.hpp"
+
+wb::Application::Application()
+    : m_broker_world( std::make_unique< flecs::world >() )
 {
 }
 
@@ -17,31 +21,32 @@ wb::Application::~Application() = default;
 // TODO move me to defines
 constexpr uint32_t TARGET_FPS = 120;
 
-int wb::Application::Run( int argc, char **argv )
+int wb::Application::Run( int argc, char ** argv )
 {
     // m_broker_world->app()
     //     .target_fps( TARGET_FPS )
     //     .run();
 
     std::filesystem::path config_directory = ".";
-    args::ArgumentParser parser( "Shimmer World Broker Application", "A broker application for managing connections from players and service servers." );
+    args::ArgumentParser parser( "Shimmer World Broker Application",
+                                 "A broker application for managing connections from players and service servers." );
     try
     {
         args::HelpFlag help( parser, "help", "Display this help menu", { 'h', "help" } );
-        args::ValueFlag< std::string > config_dir( parser, "config-dir", "Directory to load configuration files from", { 'c', "config-dir" }, args::Options::Single );
+        args::ValueFlag< std::string > config_dir( parser, "config-dir", "Directory to load configuration files from",
+                                                   { 'c', "config-dir" }, args::Options::Single );
         // args supports completion in bash/zsh/fish shells via CompletionFlag, but we have no use for it at the moment
         // TODO: add it at some point, see https://github.com/Taywee/args/issues/126
-
         parser.ParseCLI( argc, argv );
 
         if ( config_dir )
             config_directory = config_dir.Get();
     }
-    catch ( const args::Completion &e )
+    catch ( const args::Completion & e )
     {
         return 0;
     }
-    catch ( const args::Help &h )
+    catch ( const args::Help & h )
     {
         std::print( std::cerr, "{}\n{}", h.what(), parser.Help() );
         return 0;
@@ -56,5 +61,18 @@ int wb::Application::Run( int argc, char **argv )
         std::print( std::cerr, "{}\n{}", e.what(), parser.Help() );
         return 1;
     }
+
+    // TODO: build path out of config
+    // TODO: load config files
+    // TODO: pass in the loggers name?
+    shm::InitLogging( {}, "worldbroker_log.txt" );
+    shm::Log( shm::Info, "Application starting {}", 1 );
+
+    auto status_code = m_broker_world->app()
+        .target_fps( TARGET_FPS )
+        .run();
+
+    shm::ShutdownLogging();
+
     return 0;
 }
