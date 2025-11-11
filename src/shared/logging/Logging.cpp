@@ -14,7 +14,7 @@
 #include <print>
 
 static std::unordered_map< shm::LogCategory, std::shared_ptr< spdlog::logger > > G_Loggers;
-void shm::InitLogging( const shm::LoggingConfig & config, std::string_view log_file_name )
+void shm::InitLogging( const shm::LoggingConfigComponent & config, std::string_view log_file_name )
 {
     std::filesystem::path logPath{ std::string{ log_file_name } };
     if ( logPath.has_parent_path() )

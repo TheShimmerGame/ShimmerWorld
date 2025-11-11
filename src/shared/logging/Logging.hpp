@@ -7,9 +7,9 @@
 
 namespace shm
 {
-    struct LoggingConfig;
+    struct LoggingConfigComponent;
 
-    void InitLogging( const shm::LoggingConfig & config, std::string_view log_file_name );
+    void InitLogging( const shm::LoggingConfigComponent & config, std::string_view log_file_name );
     void ShutdownLogging();
 
     void SinkMessage( shm::LogCategory category,

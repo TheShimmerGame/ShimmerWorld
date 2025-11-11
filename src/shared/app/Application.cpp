@@ -8,8 +8,9 @@
 #include <iostream> // std::cerr, std::endl - in case we error out early and we do not have logging setup yet
 #include <print>
 
-#include "logging/Logging.hpp"
 #include "config/ConfigComponents.hpp"
+#include "logging/Logging.hpp"
+#include <config/Config.hpp>
 
 wb::Application::Application()
     : m_broker_world( std::make_unique< flecs::world >() )
@@ -68,9 +69,14 @@ int wb::Application::Run( int argc, char ** argv )
     shm::InitLogging( {}, "worldbroker_log.txt" );
     shm::Log( shm::Info, "Application starting {}", 1 );
 
+    m_broker_world->component< shm::ConfigPathComponent >()
+        .add( flecs::Singleton );
+    m_broker_world->set< shm::ConfigPathComponent >( shm::ConfigPathComponent{ config_directory } );
+
+    m_broker_world->import < wb::ConfigSystem >();
     auto status_code = m_broker_world->app()
-        .target_fps( TARGET_FPS )
-        .run();
+                           .target_fps( TARGET_FPS )
+                           .run();
 
     shm::ShutdownLogging();
 

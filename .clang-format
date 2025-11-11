@@ -5,7 +5,6 @@ AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: AcrossComments
 AlignConsecutiveBitFields: AcrossComments
 AlignOperands: Align
-QualifierAlignment: Left
 AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -32,6 +31,7 @@ BraceWrapping:
   SplitEmptyNamespace: true
   BeforeLambdaBody: true
   BeforeWhile: false
+BreakBeforeConceptDeclarations: Always
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
 BreakConstructorInitializers: BeforeComma
