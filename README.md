@@ -3,6 +3,7 @@
 
 [![Alt text](https://github.com/user-attachments/assets/75032a8d-c024-44d7-9616-5fca299518b1)
 ](https://github.com/user-attachments/assets/75032a8d-c024-44d7-9616-5fca299518b1)
+Click to open the interactive SVG. Click on the boxes to navigate to other parts of the project. (SVG contains single script to highlight interactables) 
 
 # Installation
 This project uses CMake together with vcpkg (manifest mode).

@@ -1,84 +1,62 @@
 
 #include "Logging.hpp"
 
-#include <magic_enum/magic_enum.hpp>
-#include <magic_enum/magic_enum_utility.hpp>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/msvc_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
-#include <filesystem>
-#include <iostream>
-#include <print>
+shm::Logger::~Logger() = default;
 
-static std::unordered_map< shm::LogCategory, std::shared_ptr< spdlog::logger > > G_Loggers;
-void shm::InitLogging( const shm::LoggingConfig & config, std::string_view log_file_name )
+shm::Logger::Logger( std::shared_ptr< spdlog::logger > && spdlog_logger )
+    : m_spdlog_logger( std::move( spdlog_logger ) )
 {
-    std::filesystem::path logPath{ std::string{ log_file_name } };
-    if ( logPath.has_parent_path() )
-        std::filesystem::create_directories( logPath.parent_path() );
+}
 
-    auto rotating_sink = std::make_shared< spdlog::sinks::rotating_file_sink_mt >( std::string{ log_file_name }, 1024 * 1024, 5, true );
-    // [LoggerName] [Timestamp] [LogLevel] Message
+void shm::Logger::SinkMessage( spdlog::level::level_enum log_lvl, fmt::string_view fmt, fmt::format_args && args )
+{
+    m_spdlog_logger->log( log_lvl, fmt::vformat( fmt, args ) );
+}
+
+shm::Sink::~Sink() = default;
+
+shm::Sink::Sink( std::shared_ptr< spdlog::sinks::sink > && spdlog_sink )
+    : m_spdlog_sink( std::move( spdlog_sink ) )
+{
+}
+
+std::unique_ptr< shm::Sink > shm::Sink::CreateLogSink( LoggingInitData && lid )
+{
+    auto logPath       = lid.m_log_file_path / lid.m_log_file_name;
+    auto rotating_sink = std::make_shared< spdlog::sinks::rotating_file_sink_mt >( logPath.string(),
+                                                                                   lid.m_max_file_size_bytes,
+                                                                                   lid.m_max_files,
+                                                                                   true );
+
     rotating_sink->set_pattern( "[%n] [%Y-%m-%d %H:%M:%S.%e] [%l@%t]: %v" );
 
-    // output everything to the console atm
-    // TODO: Get rid of this once we have stable tui
-    auto stdcerr_console_sink = std::make_shared< spdlog::sinks::stderr_color_sink_mt >();
-    stdcerr_console_sink->set_pattern( "[%n] [%H:%M:%S] [%^%l%$] %v" );
-
+    // By default we're getting stdcerr sink attached to the logger as well
+    // and MSVC sink on Windows (till i have an ui with logging window)
+    // TODO: get rid of this
     std::vector< spdlog::sink_ptr > common_sinks;
-    // TODO get rid of preprocessor and make it configurable via config file
 #ifdef _WIN32
     auto msvc_sink = std::make_shared< spdlog::sinks::msvc_sink_mt >();
-    msvc_sink->set_pattern( "[%n] [%Y-%m-%d %H:%M:%S.%e] [%l]: %v" );
     common_sinks.push_back( msvc_sink );
 #endif
-
     common_sinks.push_back( rotating_sink );
+    auto stdcerr_console_sink = std::make_shared< spdlog::sinks::stderr_color_sink_mt >();
     common_sinks.push_back( stdcerr_console_sink );
 
-    // for now set log level to debug and create per-category loggers that use all sinks
-    // TODO: Get debug levels from config
-    magic_enum::enum_for_each< shm::LogCategory >( [ & ]( auto category )
-                                                   {
-                                                       auto enum_name = magic_enum::enum_name( static_cast< shm::LogCategory >( category ) );
-                                                       auto logger    = std::make_shared< spdlog::logger >( std::string{ enum_name },
-                                                                                                            common_sinks.begin(),
-                                                                                                            common_sinks.end() );
-                                                       logger->set_level( spdlog::level::trace );
-                                                       spdlog::register_logger( logger );
-                                                       G_Loggers[ static_cast< shm::LogCategory >( category ) ] = std::move( logger );
-                                                   } );
-
-    // set default logger, in case we ever need to call spdlog::* functions
-    // but our logs go thorugh SinkMessage
-    // spdlog::set_default_logger( std::make_shared< spdlog::logger >( "default_logger", common_sinks.begin(), common_sinks.end() ) );
-
-    spdlog::flush_on( spdlog::level::warn );
+    rotating_sink->set_level( spdlog::level::trace ); // TODO argument in logging init data
+    return std::unique_ptr< shm::Sink >( new shm::Sink( std::move( rotating_sink ) ) );
 }
 
-void shm::ShutdownLogging()
+std::unique_ptr< shm::Logger > shm::Sink::AttachLogger( std::string_view logger_name, spdlog::level::level_enum log_level, spdlog::level::level_enum flush_level, std::string_view log_pattern /*= "[%n] [%Y-%m-%d %H:%M:%S.%e] [%l@%t]: %v" */ )
 {
-    // flush the spdlog just in case
-    for ( auto & [ category, logger ] : G_Loggers )
-    {
-        logger->flush();
-    }
-
-    G_Loggers.clear();
-}
-
-spdlog::level::level_enum SpdlogLevelFromShmLevel( shm::LogLevel lvl )
-{
-    return static_cast< spdlog::level::level_enum >( std::to_underlying( lvl ) );
-}
-
-void shm::SinkMessage( shm::LogCategory category, shm::LogLevel level, fmt::string_view fmt, fmt::format_args args )
-{
-    auto & logger = G_Loggers[ category ];
-    if ( logger )
-        logger->log( SpdlogLevelFromShmLevel( level ), fmt::vformat( fmt, args ) );
+    auto logger = std::make_shared< spdlog::logger >( std::string( logger_name ), m_spdlog_sink );
+    logger->set_level( log_level );
+    logger->flush_on( flush_level );
+    logger->set_pattern( std::string{ log_pattern } );
+    return std::unique_ptr< shm::Logger >( new shm::Logger( std::move( logger ) ) );
 }

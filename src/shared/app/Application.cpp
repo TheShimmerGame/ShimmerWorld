@@ -9,7 +9,6 @@
 #include <print>
 
 #include "logging/Logging.hpp"
-#include "config/ConfigComponents.hpp"
 
 wb::Application::Application()
     : m_broker_world( std::make_unique< flecs::world >() )
@@ -65,14 +64,16 @@ int wb::Application::Run( int argc, char ** argv )
     // TODO: build path out of config
     // TODO: load config files
     // TODO: pass in the loggers name?
-    shm::InitLogging( {}, "worldbroker_log.txt" );
-    shm::Log( shm::Info, "Application starting {}", 1 );
+    //shm::InitLogging( {}, "worldbroker_log.txt" );
+    //shm::Log( shm::Info, "Application starting {}", 1 );
+    auto shm_sink = shm::Sink::CreateLogSink( shm::LoggingInitData{ "worldbroker.log", "./logs/", 1024 * 1024 * 5, 5 } );
+    auto general_logger = shm_sink->AttachLogger( "worldbroker_general", spdlog::level::info, spdlog::level::info );
+    general_logger->Log( spdlog::level::info, "Application starting {}", 1 );
 
-    auto status_code = m_broker_world->app()
-        .target_fps( TARGET_FPS )
-        .run();
-
-    shm::ShutdownLogging();
+    auto some_other_logger = shm_sink->AttachLogger( "worldbroker_other", spdlog::level::debug, spdlog::level::warn );
+    some_other_logger->Log( spdlog::level::debug, "This is a debug message: {}", 42 );
+    some_other_logger->Log( spdlog::level::info, "This is an info message: {}", 3.14 );
+    some_other_logger->Log( spdlog::level::warn, "This is a warning message" );
 
     return 0;
 }
