@@ -1,30 +1,19 @@
 
-# Project Shimmer
+# Shimmer multi-world gateway
 
-Shimmer is a scalable TCP MMO server framework for Unreal Engine–based games.
-It’s built around an ECS architecture to handle networking, spatial simulation, and gameplay logic efficiently.
-The goal is to provide a modern, high-performance backend capable of supporting large, persistent worlds.
+[![Alt text](https://github.com/user-attachments/assets/75032a8d-c024-44d7-9616-5fca299518b1)
+](https://github.com/user-attachments/assets/75032a8d-c024-44d7-9616-5fca299518b1)
 
-# Planned Features:
+# Installation
+This project uses CMake together with vcpkg (manifest mode).
+The vcpkg tool itself is downloaded, compiled, and automatically bootstrapped through CMake.
+Once vcpkg is set up, project dependencies (libraries) are downloaded and managed by vcpkg.
+Use one of the provided CMake presets via CLI or CMake GUI.
+Currently, only Windows presets are available.
+Because the project uses Clang, Linux-focused presets will be added in the future.
 
-- Entity–Component–System design
-- C++26 with reflection and modern async features
-- Multithreaded job and task scheduling
+# Documentation
+TODO.
 
-# Networking
-- Custom TCP transport, reflection based
-- Connection, session management, packet encryption
-
-# World and Simulation
-- Spatial partitioning (octree, bvh accelerators)
-- Zones, instances
-- Basic AI and pathfinding hooks
-
-# Scripting and Services
-
-- Coroutine-based scripting API
-- Integration for microservices (chat, mail, etc.)
-- Persistent data storage (SQL based, most probably postgres) and world snapshots
-
-This list is subject to change as the project evolves. It is a very rough list of things needed
-(mostly written for initial readme and meant to be updated later!)
+# License
+TODO.
