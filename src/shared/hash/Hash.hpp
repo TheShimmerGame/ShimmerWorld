@@ -1,7 +1,9 @@
 #pragma once
 
+#include <concepts>
 #include <cstddef>
 #include <functional>
+#include <ranges>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -13,12 +15,6 @@ namespace shm
     template< typename T >
     concept is_std_hashable = requires( const T & object ) {
         { std::hash< T >{}( object ) } -> std::convertible_to< std::size_t >;
-    };
-
-    template< typename T >
-    concept is_iterable = requires( const T & object ) {
-        object.begin();
-        object.end();
     };
 
     // TODO: C++26 REFLECTION
@@ -40,7 +36,7 @@ namespace shm
         {
             return std::hash< T >{}( object );
         }
-        else if constexpr ( is_iterable< T > )
+        else if constexpr ( std::ranges::input_range< T > )
         {
             std::size_t result = 0;
             for ( const auto & elem : object )
@@ -119,4 +115,3 @@ namespace std
         }
     };
 } // namespace std
-
