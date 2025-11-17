@@ -10,6 +10,7 @@ find_package(args CONFIG REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
 find_package(unofficial-breakpad CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(reflectcpp CONFIG REQUIRED)
 
 set_target_properties( ${TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX )
 
@@ -41,9 +42,11 @@ target_link_libraries( ${TARGET_NAME}
     PUBLIC
 		shimmer::common
 		flecs::flecs_static
-		taywee::args
+		reflectcpp::reflectcpp
 		magic_enum::magic_enum
-		spdlog::spdlog # possibly private and wrap in our log system
+		
     PRIVATE
+		spdlog::spdlog
+		taywee::args
 		unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
 )

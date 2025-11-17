@@ -10,7 +10,8 @@
 		"flecs",
 		"args",
 		"ftxui",
-		"magic-enum"
+		"magic-enum",
+		"reflectcpp"
     ],
     "builtin-baseline": "74e6536215718009aae747d86d84b78376bf9e09"
 }
