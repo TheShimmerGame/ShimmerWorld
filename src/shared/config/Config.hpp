@@ -52,20 +52,14 @@ namespace shm
             template< IsConfigStructure Cfg, typename Self >
             [[nodiscard]] auto Get( this Self & self ) -> decltype( auto )
             {
-                using ReturnType            = std::conditional_t< std::is_const_v< Self >, const Cfg *, Cfg * >;
+                // TODO: Self might be const or non-const as well
+                using ReturnType            = std::conditional_t< std::is_const_v< Cfg >, const Cfg *, Cfg * >;
                 static ReturnType s_nullptr = nullptr;
 
                 if ( self.Type() != std::type_index( typeid( Cfg ) ) )
                     return s_nullptr;
 
-                if constexpr ( std::is_const_v< Self > )
-                {
-                    return static_cast< const Cfg * >( self.DataPtr() );
-                }
-                else
-                {
-                    return static_cast< Cfg * >( self.DataPtr() );
-                }
+                return static_cast< ReturnType >( self.DataPtr() );
             }
         };
 
@@ -215,6 +209,7 @@ namespace shm
                 if ( !load_result )
                 {
                     m_logger->Log( spdlog::level::err, "Failed to load config object. Name: {}", Cfg::ConfigName );
+                }
             }
         }
 
