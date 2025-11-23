@@ -11,7 +11,14 @@
 		"args",
 		"ftxui",
 		"magic-enum",
-		"reflectcpp"
+		"reflectcpp",
+		"doctest"
     ],
+	"features": {
+		"build-tests": {
+			"description": "Build and run tests along with executable",
+			"dependencies": [ "doctest" ]
+		}
+	},
     "builtin-baseline": "74e6536215718009aae747d86d84b78376bf9e09"
 }

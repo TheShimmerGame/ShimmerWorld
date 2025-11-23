@@ -19,6 +19,16 @@ include(cmake/vcpkg/Include.cmake)
 include(cmake/git/CheckGit.cmake)
 CheckGitSetup()
 
+### OPTIONS
+# TODO Move me to cmake/options.cmake
+cmake_dependent_option(BUILD_TESTING "Build tests" OFF [["build-tests" IN_LIST VCPKG_MANIFEST_FEATURES]] ON )
+
+find_package( doctest CONFIG REQUIRED )
+include(doctest)
+if (BUILD_TESTING)
+	include(CTest)
+endif()
+
 add_subdirectory(src)
 
 if ( ${CMAKE_GENERATOR} MATCHES "Visual Studio" )

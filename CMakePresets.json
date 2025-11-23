@@ -13,6 +13,7 @@
       "generator": "Ninja",
       "installDir": "${sourceDir}/bin/",
       "cacheVariables": {
+        "VCPKG_MANIFEST_FEATURES": "build-tests",
         "VCPKG_TARGET_TRIPLET": "x64-windows",
         "VCPKG_HOST_TRIPLET": "x64-windows",
         "VCPKG_OVERLAY_PORTS": {
