@@ -21,7 +21,7 @@ CheckGitSetup()
 
 ### OPTIONS
 # TODO Move me to cmake/options.cmake
-cmake_dependent_option(BUILD_TESTING "Build tests" OFF [["build-tests" IN_LIST VCPKG_MANIFEST_FEATURES]] ON )
+cmake_dependent_option(BUILD_TESTING "Build tests" ON [["build-tests" IN_LIST VCPKG_MANIFEST_FEATURES]] ON )
 
 find_package( doctest CONFIG REQUIRED )
 include(doctest)
