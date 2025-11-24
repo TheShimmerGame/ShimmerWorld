@@ -28,6 +28,7 @@ struct TestConfig
     static constexpr uint32_t ConfigVersion  = 1;
 
     int32_t testvar = 3;
+    std::vector< std::string > eheheh{};
 };
 
 struct TestConfig2
@@ -93,30 +94,6 @@ int wb::Application::Run( int argc, char ** argv )
     some_other_logger->Log( spdlog::level::info, "This is an info message: {}", 3.14 );
     some_other_logger->Log( spdlog::level::warn, "This is a warning message" );
 
-    shm::Config cfg{ "./configs/", shm_sink.get() };
-
-    cfg.RegisterConfigs( TestConfig{}, TestConfig2{ "testing" } );
-
-    auto loaded_test_cfg = cfg.GetConfig< TestConfig >();
-    if ( loaded_test_cfg )
-        some_other_logger->Log( spdlog::level::info, "Loaded TestConfig with testvar = {}", loaded_test_cfg->testvar );
-    else
-        some_other_logger->Log( spdlog::level::warn, "Failed to load TestConfig" );
-    loaded_test_cfg->testvar = 42;
-    cfg.Update();
-
-    auto conf2 = cfg.GetConfig< TestConfig2 >();
-    if ( conf2 )
-        some_other_logger->Log( spdlog::level::info, "Loaded TestConfig2 with test_string = {}", conf2->test_string );
-    else
-        some_other_logger->Log( spdlog::level::warn, "Failed to load TestConfig2" );
-
-    conf2->test_string = "Hello, World!";
-    cfg.Update();
-
-    TestConfig2 const * cfg3 = cfg.GetConfig< const TestConfig2 >();
-
-    cfg.Update();
-
+    shm::Config cfg{ "./Testing/configs" };
     return 0;
 }

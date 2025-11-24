@@ -44,9 +44,9 @@ target_link_libraries( ${TARGET_NAME}
 		flecs::flecs_static
 		reflectcpp::reflectcpp
 		magic_enum::magic_enum
+		spdlog::spdlog
 		
     PRIVATE
-		spdlog::spdlog
 		taywee::args
 		unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client
 )
