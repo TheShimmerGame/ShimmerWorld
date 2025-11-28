@@ -34,10 +34,12 @@ namespace shm
     struct ConfigObject
     {
         friend struct Config;
+        template< IsConfigStructure Cfg >
+        friend struct ConfigAccessor;
 
         template< IsConfigStructure ConfigT >
-        ConfigObject( ConfigT && cfg, std::string_view config_name )
-            : m_impl( std::make_unique< ConfigImpl< ConfigT > >( std::forward< ConfigT >( cfg ), config_name ) )
+        ConfigObject( ConfigT && cfg, std::string && config_path )
+            : m_impl( std::make_unique< ConfigImpl< ConfigT > >( std::forward< ConfigT >( cfg ), std::move( config_path ) ) )
         {
         }
 
@@ -46,6 +48,7 @@ namespace shm
         {
             virtual ~IConfig() = default;
 
+            [[nodiscard]] virtual shm::Result< void > Init()                                        = 0;
             [[nodiscard]] virtual shm::Result< void > LoadFromJson( const std::string & json_data ) = 0;
             virtual std::string_view GetConfigFileName()                                            = 0;
             virtual uint32_t GetConfigVersion() const                                               = 0;
@@ -74,10 +77,24 @@ namespace shm
         template< IsConfigStructure ConfigT >
         struct ConfigImpl final : public IConfig
         {
-            ConfigImpl( ConfigT && cfg, std::string_view cfg_name )
+            ConfigImpl( ConfigT && cfg, std::string && full_cfg_path )
                 : m_config( std::forward< ConfigT >( cfg ) )
-                , m_config_name( cfg_name )
+                , m_config_full_path( std::move( full_cfg_path ) )
+                , m_config_file_name( shm::fs::GetFileName( m_config_full_path ).value_or( "INVALID FILE NAME" ) )
             {
+            }
+
+            [[nodiscard]] shm::Result< void > Init() override
+            {
+                auto json_data_res = shm::fs::ReadFileToString( m_config_full_path ).value_or( {} );
+                if ( !json_data_res.empty() )
+                {
+                    auto load_result = LoadFromJson( json_data_res );
+                    if ( !load_result.has_value() )
+                        return load_result;
+                }
+
+                return {};
             }
 
             [[nodiscard]] shm::Result< void > LoadFromJson( const std::string & json_data ) override
@@ -105,7 +122,7 @@ namespace shm
 
             std::string_view GetConfigFileName() override
             {
-                return m_config_name;
+                return m_config_file_name;
             }
 
             uint32_t GetConfigVersion() const override
@@ -118,11 +135,13 @@ namespace shm
                 if ( !new_data )
                     return;
 
+                auto config_t = static_cast< ConfigT * >( new_data );
+
                 std::scoped_lock lock( m_access_lock );
                 if ( !m_config_update )
-                    m_config_update = std::make_unique< ConfigT >( *static_cast< ConfigT * >( new_data ) );
-                else
-                    *m_config_update = *static_cast< ConfigT * >( new_data );
+                    m_config_update = std::make_unique< ConfigT >();
+
+                *m_config_update = std::move( *config_t );
             }
 
             shm::Result< void > ApplyPendingUpdate() override
@@ -131,15 +150,10 @@ namespace shm
                 if ( !m_config_update )
                     return {};
 
-                m_config        = std::move( *m_config_update );
-                m_config_update = nullptr;
-
                 try
                 {
-
-                    std::string json_data = rfl::json::write( m_config, rfl::json::pretty );
-                    const auto path = fmt::format( "{}{}.json", "./logs/", m_config_name );
-                    auto write_result     = shm::fs::WriteStringToFile( path, json_data, std::ios::in | std::ios::trunc );
+                    std::string json_data = rfl::json::write( *m_config_update, rfl::json::pretty );
+                    auto write_result     = shm::fs::WriteStringToFile( m_config_full_path, json_data, std::ios::out | std::ios::trunc );
                     if ( !write_result.has_value() )
                         return write_result;
                 }
@@ -148,12 +162,15 @@ namespace shm
                     return std::unexpected( std::make_error_code( std::errc::io_error ) );
                 }
 
+                m_config        = std::move( *m_config_update );
+                m_config_update = nullptr;
                 return {};
             }
 
         protected:
             ConfigT m_config;
-            std::string_view m_config_name;
+            std::string m_config_full_path;
+            std::string m_config_file_name;
             std::unique_ptr< ConfigT > m_config_update = nullptr;
         };
 
@@ -203,10 +220,18 @@ namespace shm
 
         auto operator->() -> Cfg *
         {
-            using ReturnType                = std::conditional_t< std::is_const_v< Cfg >, const Cfg *, Cfg * >;
-            static ReturnType no_result_cfg = nullptr;
+            using ReturnType = std::conditional_t< std::is_const_v< Cfg >, const Cfg *, Cfg * >;
+
             if ( !m_config_object )
-                return no_result_cfg;
+            {
+                // TODO: add logging that we're fetching invalid config so we can track it
+
+                // Return a default constructed static config to avoid returning nullptr
+                // which prevents a segfault but may hide bugs - thus the TODO above
+                static Cfg null_result_cfg = {};
+                m_needs_synchro            = false;
+                return &null_result_cfg;
+            }
 
             m_needs_synchro = !std::is_const_v< Cfg >;
             return &m_cfg_copy;
@@ -223,9 +248,6 @@ namespace shm
 
     struct Config
     {
-        template< IsConfigStructure Cfg >
-        friend struct ConfigAccessor;
-
         Config( std::string_view log_root_dir );
         virtual ~Config();
         Config( const Config & )             = delete;
@@ -273,41 +295,18 @@ namespace shm
             if ( config_iter != m_configs.end() )
                 return std::unexpected( std::make_error_code( std::errc::file_exists ) );
 
-            auto obj          = std::make_unique< ConfigObject >( std::forward< Cfg >( cfg ), config_name );
-            auto & config_obj = m_configs.emplace_back( std::move( obj ) );
-
-            auto json_data_res =
-                shm::fs::ReadFileToString( fmt::format( "{}{}.{}", m_log_root_dir, config_name, config_extension ) )
-                    .value_or( {} );
-            if ( !json_data_res.empty() )
-            {
-                auto load_result = config_obj->m_impl->LoadFromJson( json_data_res );
-                if ( !load_result.has_value() )
-                    return load_result;
-            }
-
-            return {};
+            auto full_cfg_path = fmt::format( "{}{}.{}", m_log_root_dir, config_name, config_extension );
+            auto obj           = std::make_unique< ConfigObject >( std::forward< Cfg >( cfg ), std::move( full_cfg_path ) );
+            auto init_result   = obj->m_impl->Init();
+            if ( init_result.has_value() )
+                m_configs.emplace_back( std::move( obj ) );
+            return init_result;
         }
 
         /// @brief Apply queued updates & persist each modified config to disk.
         /// Call from main thread.
         /// @return Num of configs that were dirty and were saved.
-        size_t SaveDirtyConfigs();
-
-    protected:
-        template< IsConfigStructure Cfg >
-        void MarkAsDirty( Cfg && possibly_new_data, std::string_view config_name )
-        {
-            auto config_iter = std::ranges::find_if( m_configs,
-                                                     [ config_name ]( const std::unique_ptr< ConfigObject > & obj )
-                                                     {
-                                                         return obj->Type() == std::type_index( typeid( Cfg ) ) && obj->m_impl->GetConfigFileName() == config_name;
-                                                     } );
-            if ( config_iter == m_configs.end() )
-                return;
-
-            ( *config_iter )->m_impl->SetPendingUpdate( &possibly_new_data );
-        }
+        std::vector< shm::Result< void > > SaveDirtyConfigs();
 
     private:
         std::vector< std::unique_ptr< ConfigObject > > m_configs;
@@ -320,8 +319,8 @@ namespace shm
     {
         if constexpr ( !std::is_const_v< Cfg > )
         {
-            //if ( m_needs_synchro && m_config_object )
-                //m_config_reg->MarkAsDirty( std::move( m_cfg_copy ), m_config_name );
+            if ( m_needs_synchro && m_config_object )
+                m_config_object->m_impl->SetPendingUpdate( &m_cfg_copy );
         }
     }
 

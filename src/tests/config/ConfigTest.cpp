@@ -58,7 +58,7 @@ namespace shm::cfg
             CHECK( reg_result.has_value() );
         }
 
-        SUBCASE( "Modyfing and retrieving config" )
+        SUBCASE( "Modifying and retrieving config" )
         {
             shm::Config config_obj{ G_TestConfigDir };
             auto reg_result = config_obj.RegisterConfig( TestConfig{}, "TestConfig", "json", &TestConfigMigrationFunction );
@@ -68,14 +68,29 @@ namespace shm::cfg
             {
                 auto test_config_accessor = config_obj.GetConfig< TestConfig >( "TestConfig" );
                 CHECK( test_config_accessor.IsValid() );
+                // Even though the config is not valid, we're able to modify it without segfaults
+                // otherwise we will segfault here and the test will fail
                 test_config_accessor->variable = 42;
             }
 
-            config_obj.SaveDirtyConfigs();
+            auto saved = config_obj.SaveDirtyConfigs();
+            CHECK( saved.size() == 1 );
+            CHECK( saved[ 0 ].has_value() );
+
 
             auto test_config_accessor_2 = config_obj.GetConfig< const TestConfig >( "TestConfig" );
             CHECK( test_config_accessor_2.IsValid() );
             CHECK( test_config_accessor_2->variable == 42 );
+        }
+
+        SUBCASE( "Reading config from disk" )
+        {
+            shm::Config config_obj{ G_TestConfigDir };
+            auto reg_result = config_obj.RegisterConfig( TestConfig{}, "TestConfig", "json", &TestConfigMigrationFunction );
+            CHECK( reg_result.has_value() );
+            auto test_config_accessor = config_obj.GetConfig< const TestConfig >( "TestConfig" );
+            CHECK( test_config_accessor.IsValid() );
+            CHECK( test_config_accessor->variable == 42 );
         }
     }
 } // namespace shm::cfg
