@@ -37,7 +37,6 @@ std::vector< shm::Result< void > > shm::Config::SaveDirtyConfigs()
         auto pending_result = cfg_obj->m_impl->ApplyPendingUpdate();
         if ( !pending_result.has_value() )
         {
-            auto msg = pending_result.error().message();
             results.emplace_back( pending_result );
             continue;
         }

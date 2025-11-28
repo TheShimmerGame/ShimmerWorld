@@ -146,13 +146,18 @@ namespace shm
 
             shm::Result< void > ApplyPendingUpdate() override
             {
-                std::scoped_lock lock( m_access_lock );
-                if ( !m_config_update )
-                    return {};
+                std::unique_ptr< ConfigT > local_update = nullptr;
+                {
+                    std::scoped_lock lock( m_access_lock );
+                    if ( !m_config_update )
+                        return {};
+
+                    local_update = std::exchange( m_config_update, nullptr );
+                }
 
                 try
                 {
-                    std::string json_data = rfl::json::write( *m_config_update, rfl::json::pretty );
+                    std::string json_data = rfl::json::write( *local_update, rfl::json::pretty );
                     auto write_result     = shm::fs::WriteStringToFile( m_config_full_path, json_data, std::ios::out | std::ios::trunc );
                     if ( !write_result.has_value() )
                         return write_result;
@@ -162,8 +167,7 @@ namespace shm
                     return std::unexpected( std::make_error_code( std::errc::io_error ) );
                 }
 
-                m_config        = std::move( *m_config_update );
-                m_config_update = nullptr;
+                m_config = std::move( *local_update );
                 return {};
             }
 
