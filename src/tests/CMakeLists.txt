@@ -6,6 +6,4 @@ target_link_libraries( shm_config_tests
 	    doctest::doctest )
 		
 # Discover individual doctest TEST_CASEs and register them with CTest
-
-#add_test( NAME shm_config_tests COMMAND $<TARGET_FILE:shm_config_tests> )
-doctest_discover_tests( shm_config_tests )
+doctest_discover_tests( shm_config_tests ADD_LABELS 1 )
