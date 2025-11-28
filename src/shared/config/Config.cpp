@@ -6,7 +6,8 @@
 
 shm::Config::~Config()
 {
-    SaveDirtyConfigs();
+    // TODO: guard this behind a feature flag
+    //SaveDirtyConfigs();
 }
 
 shm::Config::Config( std::string_view log_root_dir )
@@ -25,8 +26,9 @@ shm::Result< void > shm::Config::IsDirectoryCreated() const
     return {};
 }
 
-size_t shm::Config::SaveDirtyConfigs()
+std::vector< shm::Result< void > > shm::Config::SaveDirtyConfigs()
 {
+    std::vector< shm::Result< void > > results;
     for ( auto & cfg_obj : m_configs )
     {
         if ( !cfg_obj )
@@ -34,17 +36,14 @@ size_t shm::Config::SaveDirtyConfigs()
 
         auto pending_result = cfg_obj->m_impl->ApplyPendingUpdate();
         if ( !pending_result.has_value() )
-            continue; // Optional: log error
-        // std::string json;
-        // auto res = cfg_obj->m_impl->SaveToJson( json );
-        // if ( !res.has_value() )
-        //     continue; // Optional: log error
-        //
-        // const auto path =
-        //     fmt::format( "{}{}.json", m_log_root_dir, cfg_obj->m_impl->GetConfigFileName() );
-        //  shm::fs::WriteFileFromString( path, json );
+        {
+            results.emplace_back( pending_result );
+            continue;
+        }
+
+        results.emplace_back( shm::Result< void >{} );
     }
-    return {};
+    return results;
 }
 
 /** CONFIG OBJECT **/
