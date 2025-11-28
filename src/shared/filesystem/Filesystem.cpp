@@ -35,3 +35,11 @@ shm::Result< std::string > shm::fs::ReadFileToString( const std::filesystem::pat
     std::string content( std::istreambuf_iterator< char >{ file }, {} );
     return content;
 }
+
+shm::Result< std::string > shm::fs::GetFileName( const std::filesystem::path & path )
+{
+    if ( !path.has_filename() || !path.filename().has_stem() )
+        return std::unexpected( std::make_error_code( std::errc::invalid_argument ) );
+
+    return path.filename().stem().string();
+}
