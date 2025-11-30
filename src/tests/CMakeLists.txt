@@ -1,9 +1,19 @@
 
-add_executable( shm_config_tests config/ConfigTest.cpp )
-target_link_libraries( shm_config_tests
-	PRIVATE
-		shimmer::shared
-	    doctest::doctest )
-		
-# Discover individual doctest TEST_CASEs and register them with CTest
-doctest_discover_tests( shm_config_tests ADD_LABELS 1 )
+function(shimmer_add_doctest target)
+    if (ARGC LESS 2)
+        message(FATAL_ERROR "shimmer_add_doctest(${target} ...): At least one source file is required.")
+    endif()
+
+    set(sources ${ARGN})
+
+    add_executable(${target} ${sources})
+    target_link_libraries(${target}
+        PRIVATE
+            shimmer::shared
+            doctest::doctest)
+
+    doctest_discover_tests(${target} ADD_LABELS 1)
+endfunction()
+
+shimmer_add_doctest(shm_config_tests config/ConfigTest.cpp)
+shimmer_add_doctest(shm_logging_tests logging/LoggingTest.cpp)

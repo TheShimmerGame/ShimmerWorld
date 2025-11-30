@@ -1,86 +1,83 @@
-
 #pragma once
 
-#include <fmt/base.h>
 #include <spdlog/common.h>
+#include "results/Result.hpp"
 
-#include <cstdint>
-#include <filesystem>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace spdlog
 {
+    class logger;
     namespace sinks
     {
         class sink;
     }
-
-    class logger;
 } // namespace spdlog
 
 namespace shm
 {
-    // TODO: Probably could be nice to support multiple sinks, right now it always creates a rotating file sink
-    // some variant-like?
-    struct LoggingInitData
+    /// @brief RAII scope logger. On construction, pushes scope name to thread-local stack.
+    /// When destroyed, pops scope name from stack.
+    /// It is visible in log messages via the %Z pattern flag.
+    struct LogScope
     {
-        std::string m_log_file_name{ "DEFAULT_CONFIG_LOG_RENAME_ME_IN_LOGGING_INIT_DATA.log" };
-        std::filesystem::path m_log_file_path{ "./logs/" };
-        uint32_t m_max_file_size_bytes{ 1024 * 1024 * 5 }; // 5 MB
-        uint32_t m_max_files{ 5 };
+        LogScope() = delete;
+        explicit LogScope( std::string_view scope_name );
+        ~LogScope();
+
+        LogScope( const LogScope & )             = delete;
+        LogScope & operator=( const LogScope & ) = delete;
+        LogScope( LogScope && )                  = delete;
+        LogScope & operator=( LogScope && )      = delete;
     };
 
-    struct Logger;
-    struct Sink
+    struct LoggerSettings
     {
-        Sink() = delete;
+        std::string m_log_file_name{ "DEFAULT_CONFIG_LOG_RENAME_ME_IN_LOGGING_INIT_DATA.log" };
+        std::string m_log_file_path{ "./logs/" };
+        uint32_t m_max_file_size_bytes{ 1024u * 1024u * 5u }; // 5 MB
+        uint32_t m_max_files{ 5u };
+        bool m_rotate_on_open{ true };
+        bool m_create_directories{ true };
 
-        virtual ~Sink();
+        std::string m_logger_name{ "shimmer" };
+        spdlog::level::level_enum m_level{ spdlog::level::info };
+        spdlog::level::level_enum m_flush_level{ spdlog::level::info };
+        /// @brief Log pattern, using spdlog pattern syntax. Controls how log messages are formatted.
+        std::string m_log_pattern{ "[%n] [%Y-%m-%d %H:%M:%S.%e] [%l@%t] %*%v" };
 
-        Sink( const Sink & )             = delete;
-        Sink( Sink && )                  = delete;
-        Sink & operator=( const Sink & ) = delete;
-        Sink & operator=( Sink && )      = delete;
-
-        static std::unique_ptr< shm::Sink > CreateLogSink( LoggingInitData && lid );
-
-        std::unique_ptr< Logger > AttachLogger( std::string_view logger_name,
-                                                spdlog::level::level_enum log_level,
-                                                spdlog::level::level_enum flush_level,
-                                                std::string_view log_pattern = "[%n] [%Y-%m-%d %H:%M:%S.%e] [%l@%t]: %v" );
-
-    private:
-        explicit Sink( std::shared_ptr< spdlog::sinks::sink > && spdlog_sink );
-        std::shared_ptr< spdlog::sinks::sink > m_spdlog_sink;
+        bool m_enable_stderr{ true };
+        // TODO get rid of this preprocessor altogether once we have UI layer
+#ifdef _WIN32
+        bool m_enable_msvc{ true };
+#else
+        bool m_enable_msvc{ false };
+#endif
     };
 
     struct Logger
     {
-        Logger() = delete;
-        virtual ~Logger();
+        explicit Logger( const LoggerSettings & settings );
+        ~Logger();
 
+        Logger()                             = delete;
         Logger( const Logger & )             = delete;
-        Logger( Logger && )                  = delete;
         Logger & operator=( const Logger & ) = delete;
+        Logger( Logger && )                  = delete;
         Logger & operator=( Logger && )      = delete;
 
-        template< typename... Args >
-        void Log( spdlog::level::level_enum log_lvl, fmt::format_string< Args... > fmt, Args &&... args )
+        shm::Result< void > GetDirectoryCreationError() const
         {
-            SinkMessage( log_lvl, fmt, fmt::make_format_args( args... ) );
+            if ( m_directory_ec )
+                return std::unexpected( m_directory_ec );
+            return {};
         }
 
-    protected:
-        void SinkMessage( spdlog::level::level_enum log_lvl,
-                          fmt::string_view fmt,
-                          fmt::format_args && args );
-
     private:
-        // Grant Sink access so AttachLogger can construct Logger
-        friend struct Sink;
-
-        explicit Logger( std::shared_ptr< spdlog::logger > && spdlog_logger );
-        std::shared_ptr< spdlog::logger > m_spdlog_logger;
+        std::error_code m_directory_ec;
+        std::shared_ptr< spdlog::logger > m_logger;
     };
 
 } // namespace shm

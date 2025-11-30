@@ -26,8 +26,6 @@ shm::Result< void > shm::fs::CreateDirectories( const std::filesystem::path & pa
 
 shm::Result< std::string > shm::fs::ReadFileToString( const std::filesystem::path & path )
 {
-    std::vector< std::byte > buffer{};
-
     std::ifstream file( path );
     if ( !file.is_open() )
         return std::unexpected( std::make_error_code( static_cast< std::errc >( errno ) ) );
