@@ -299,7 +299,9 @@ namespace shm
             if ( config_iter != m_configs.end() )
                 return std::unexpected( std::make_error_code( std::errc::file_exists ) );
 
-            auto full_cfg_path = fmt::format( "{}{}.{}", m_log_root_dir, config_name, config_extension );
+            // the first argument is separated with / which might cause the path to have '//' in one place
+            // we do this because user might provide path without ending / and // is a valid path on most distros
+            auto full_cfg_path = fmt::format( "{}/{}.{}", m_log_root_dir, config_name, config_extension );
             auto obj           = std::make_unique< ConfigObject >( std::forward< Cfg >( cfg ), std::move( full_cfg_path ) );
             auto init_result   = obj->m_impl->Init();
             if ( init_result.has_value() )

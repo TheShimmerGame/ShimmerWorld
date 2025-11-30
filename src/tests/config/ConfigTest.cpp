@@ -22,7 +22,7 @@ static shm::Result< TestConfig > TestConfigMigrationFunction( std::string & /*js
     return config;
 }
 
-static constexpr std::string_view G_TestConfigDir = "./Testing/Configs/";
+static constexpr std::string_view G_TestConfigDir = "./Testing/Configs";
 namespace shm::cfg
 {
     TEST_CASE( "shm::Config" )
@@ -91,6 +91,31 @@ namespace shm::cfg
             auto test_config_accessor = config_obj.GetConfig< const TestConfig >( "TestConfig" );
             CHECK( test_config_accessor.IsValid() );
             CHECK( test_config_accessor->variable == 42 );
+        }
+
+        SUBCASE( "Directory without ending slash" )
+        {
+            shm::Config config_obj{ G_TestConfigDir };
+            auto dir_result = config_obj.IsDirectoryCreated();
+            CHECK( dir_result.has_value() );
+
+            auto reg_result = config_obj.RegisterConfig( TestConfig{}, "NoSlashConfig", "json", &TestConfigMigrationFunction );
+            CHECK( reg_result.has_value() );
+            auto test_config_accessor = config_obj.GetConfig< const TestConfig >( "NoSlashConfig" );
+            CHECK( test_config_accessor.IsValid() );
+        }
+
+        SUBCASE( "Directory with ending slash" )
+        {
+            shm::Config config_obj{ fmt::format( "{}/", G_TestConfigDir ) };
+            auto dir_result = config_obj.IsDirectoryCreated();
+            CHECK( dir_result.has_value() );
+
+            auto reg_result = config_obj.RegisterConfig( TestConfig{}, "SlashConfig", "json", &TestConfigMigrationFunction );
+            CHECK( reg_result.has_value() );
+
+            auto test_config_accessor = config_obj.GetConfig< const TestConfig >( "SlashConfig" );
+            CHECK( test_config_accessor.IsValid() );
         }
     }
 } // namespace shm::cfg
