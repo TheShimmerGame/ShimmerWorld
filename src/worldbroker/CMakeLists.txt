@@ -18,7 +18,7 @@ target_include_directories( ${BINARY_TARGET_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_compile_features( ${BINARY_TARGET_NAME} PRIVATE cxx_std_23 )
+target_compile_features( ${BINARY_TARGET_NAME} PRIVATE cxx_std_26 )
 
 file( GLOB_RECURSE TARGET_SOURCES CONFIGURE_DEPENDS *.cpp *.hpp )
 

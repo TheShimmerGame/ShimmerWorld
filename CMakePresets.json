@@ -37,7 +37,7 @@
           "type": "FILEPATH",
           "value": "${sourceDir}/install"
         },
-        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD": "26",
         "CMAKE_COLOR_DIAGNOSTICS": "ON"
       }
     },
@@ -92,7 +92,7 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-clang-x64"
+          "intelliSenseMode": "windows-clangcl-x64"
         }
       }
     },
@@ -115,7 +115,7 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-clang-x64"
+          "intelliSenseMode": "windows-clangcl-x64"
         }
       }
     },
