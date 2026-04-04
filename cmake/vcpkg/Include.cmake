@@ -1,5 +1,6 @@
-set(AUTO_VCPKG_SPECIFIED_HASH "e3ed41868d5034bc608eaaa58383cd6ecdbb5ffb")
+set(AUTO_VCPKG_SPECIFIED_HASH "594ad8871e1e8e45f8e626c015fd611163430207")
 set(AUTO_VCPKG_GIT_TAG "2025.10.17")
+
 string(TIMESTAMP AUTOVCPKG_REMINDER_TIMESTAMP "%Y.%m.%d")
 # set this to 3 months after last tag update, new vcpkg tags are released every ~2 months
 if (AUTOVCPKG_REMINDER_TIMESTAMP STRGREATER "2025.03.13")
