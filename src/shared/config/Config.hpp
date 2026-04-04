@@ -1,13 +1,13 @@
 
 #pragma once
 
+// TOD: Slim down this header
+
 #include <concepts>
 #include <cstdio>
-#include <functional>
 #include <memory>
 #include <mutex>
 #include <string>
-#include <thread>
 #include <type_traits>
 #include <typeindex>
 #include <utility>
@@ -23,13 +23,13 @@
 namespace shm
 {
     template< typename C >
-    concept IsConfigStructure = requires {
+    concept IsConfigStructure = requires
+    {
         { C::ConfigVersion } -> std::convertible_to< uint32_t >;
     };
 
     template< typename Fn, typename F >
-    concept IsVersionMigratorFnPtr =
-        std::is_same_v< Fn, shm::Result< F > ( * )( std::string &, uint32_t, uint32_t ) >;
+    concept IsVersionMigratorFnPtr = std::is_same_v< Fn, shm::Result< F > ( * )( std::string &, uint32_t, uint32_t ) >;
 
     struct ConfigObject
     {
